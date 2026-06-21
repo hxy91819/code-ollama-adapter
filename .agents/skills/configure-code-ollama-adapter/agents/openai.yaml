@@ -1,0 +1,7 @@
+interface:
+  display_name: "Configure Code Ollama Adapter"
+  short_description: "Configure Codex and Claude for Ollama GLM"
+  default_prompt: "Use $configure-code-ollama-adapter to audit and repair the local Codex and Claude Code Ollama GLM setup."
+
+policy:
+  allow_implicit_invocation: true

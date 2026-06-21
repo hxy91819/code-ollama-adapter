@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.openclaw.code-ollama-adapter</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__BIN_PATH__</string>
+    <string>--host</string>
+    <string>127.0.0.1</string>
+    <string>--port</string>
+    <string>11435</string>
+    <string>--upstream</string>
+    <string>http://127.0.0.1:11434</string>
+    <string>--model-alias</string>
+    <string>glm-5.2</string>
+    <string>--model-alias</string>
+    <string>glm-5.2:cloud[1m]</string>
+    <string>--model-target</string>
+    <string>glm-5.2:cloud</string>
+    <string>--reasoning-map</string>
+    <string>xhigh=max</string>
+    <string>--default-reasoning-effort</string>
+    <string>max</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/code-ollama-adapter.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/code-ollama-adapter.err.log</string>
+</dict>
+</plist>

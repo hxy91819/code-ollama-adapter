@@ -1,0 +1,13 @@
+/bin/
+dist/
+coverage.out
+tmp/
+
+# Local environment and credentials. Keep API keys and provider tokens outside
+# the repository.
+.env
+.env.*
+*.log
+*.pem
+*.key
+*.crt

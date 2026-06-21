@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Codex Claude Ollama"
+  short_description: "Configure Codex and Claude for Ollama GLM"
+  default_prompt: "Use $setup-codex-claude-ollama to configure Codex and Claude Code for Ollama Cloud GLM on this machine."

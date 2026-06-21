@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    name: Go test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Format check
+        run: |
+          test -z "$(gofmt -l .)"
+      - name: Test
+        run: |
+          go vet ./...
+          go test ./...
+      - name: Build
+        run: go build -o bin/code-ollama-adapter ./cmd/code-ollama-adapter
+      - name: Script help
+        run: |
+          bash -n scripts/install.sh
+          bash -n scripts/uninstall.sh
+          bash -n scripts/install-service.sh
+          scripts/install.sh --help
+          scripts/uninstall.sh --help
+      - name: Validate launchd plist
+        if: runner.os == 'macOS'
+        run: plutil -lint launchd/ai.openclaw.code-ollama-adapter.plist

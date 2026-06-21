@@ -1,0 +1,17 @@
+[Unit]
+Description=Codex and Claude Code Ollama Cloud adapter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=__BIN_PATH__ --host 127.0.0.1 --port 11435 --upstream http://127.0.0.1:11434 --model-alias glm-5.2 --model-alias glm-5.2:cloud[1m] --model-target glm-5.2:cloud --reasoning-map xhigh=max --default-reasoning-effort max
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

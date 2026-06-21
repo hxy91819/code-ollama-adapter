@@ -1,0 +1,13 @@
+model = "glm-5.2"
+model_provider = "ollama_cloud"
+model_reasoning_effort = "xhigh"
+model_catalog_json = "/absolute/path/to/ollama-cloud-glm-5.2.json"
+
+[model_providers.ollama_cloud]
+name = "Ollama Cloud via Code Ollama Adapter"
+base_url = "http://127.0.0.1:11435/v1"
+wire_api = "responses"
+
+[tui]
+status_line = ["model-with-reasoning", "context-remaining", "current-dir", "weekly-limit", "used-tokens", "git-branch", "permissions", "context-window-size"]
+status_line_use_colors = true
