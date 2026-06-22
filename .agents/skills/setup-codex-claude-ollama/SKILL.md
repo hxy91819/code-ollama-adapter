@@ -1,6 +1,6 @@
 ---
 name: setup-codex-claude-ollama
-description: Configure or repair a user's local Codex and Claude Code setup so both clients use Ollama Cloud GLM through code-ollama-adapter. Use when asked to set up Codex profiles, Claude Code settings, Ollama Cloud GLM-5.2, max reasoning, xhigh-to-max mapping, 1M-class Claude context, local adapter URLs, or end-to-end verification for these coding agents.
+description: Configure or repair a user's local Codex and Claude Code setup so both clients use Ollama Cloud GLM through code-ollama-adapter. Use when asked to set up Codex profiles, Claude Code settings, Ollama Cloud GLM-5.2, optional cheaper Claude Haiku defaults such as GLM-4.7, max reasoning, xhigh-to-max mapping, 1M-class Claude context, local adapter URLs, or end-to-end verification for these coding agents.
 ---
 
 # Setup Codex Claude Ollama
@@ -22,6 +22,9 @@ configuration while adding the minimal required profile/settings.
 - Treat Ollama GLM `max` reasoning as the desired default for coding-agent use.
 - For Codex, expose `xhigh` as the selectable user-facing level and rely on the
   adapter to send Ollama-compatible `max`.
+- For Claude Code, keep Sonnet/Opus on `glm-5.2:cloud[1m]` for the 1M-class
+  context path, and use `glm-4.7:cloud` as the cheaper Haiku-class default when
+  the user wants lower-cost lightweight tasks.
 - Verify behavior with clients and adapter logs, not only by inspecting files.
 
 ## Discover Paths
@@ -125,7 +128,7 @@ Recommended values:
     "ANTHROPIC_AUTH_TOKEN": "ollama",
     "ANTHROPIC_API_KEY": "",
     "ANTHROPIC_BASE_URL": "http://127.0.0.1:11435",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-5.2:cloud[1m]",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-4.7:cloud",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-5.2:cloud[1m]",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-5.2:cloud[1m]",
     "CLAUDE_CODE_MAX_CONTEXT_TOKENS": "1000000",
@@ -142,6 +145,8 @@ unknown keys unless the user asks; rely on the adapter and model defaults.
 
 Claude uses `glm-5.2:cloud[1m]` only as a client-side display/context alias.
 The adapter strips `[1m]` and forwards `glm-5.2:cloud` to Ollama.
+Do not add `[1m]` to `glm-4.7:cloud`; it is a cheaper Haiku-class default with
+a smaller context window.
 
 ## Verification
 
@@ -182,10 +187,12 @@ Verify Claude:
 
 ```bash
 timeout 180 claude -p 'Reply exactly OK.' --model 'glm-5.2:cloud[1m]'
+timeout 180 claude -p 'Reply exactly OK.' --model 'glm-4.7:cloud'
 ```
 
-Expected: Claude returns `OK`. For interactive Claude, also check `/status` and
-`/context`; the context should be 1M-class rather than the default 200K.
+Expected: Claude returns `OK` for both. For interactive Claude, also check
+`/status` and `/context` on the GLM-5.2 path; the context should be 1M-class
+rather than the default 200K.
 
 Check adapter logs without exposing bodies:
 
@@ -204,6 +211,8 @@ Expected markers:
 - If Claude still shows 200K context, confirm it launched from a fresh terminal
   after settings changed and that `CLAUDE_CODE_MAX_CONTEXT_TOKENS` is visible in
   its environment.
+- If Haiku should be cheaper but still shows GLM-5.2, confirm
+  `ANTHROPIC_DEFAULT_HAIKU_MODEL` is `glm-4.7:cloud` and restart Claude Code.
 - If Codex says `xhigh` but logs only `rewrite_model`, confirm the service was
   restarted with `--default-reasoning-effort max`.
 - If requests fail before reaching Ollama, check `ollama` is listening on

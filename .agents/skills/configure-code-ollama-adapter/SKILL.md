@@ -38,7 +38,9 @@ explicit, and reversible.
 Claude Code:
 
 - `ANTHROPIC_BASE_URL=http://127.0.0.1:11435`
-- default Haiku/Sonnet/Opus models use `glm-5.2:cloud[1m]`
+- default Sonnet/Opus models use `glm-5.2:cloud[1m]`
+- default Haiku model uses `glm-4.7:cloud` when the user wants a cheaper
+  lightweight model
 - `effortLevel=max`
 - `CLAUDE_CODE_MAX_CONTEXT_TOKENS=1000000`
 - `CLAUDE_CODE_AUTO_COMPACT_WINDOW=950000`
@@ -114,6 +116,8 @@ Adapter service:
 
    timeout 180 claude -p 'Reply exactly OK.' \
      --model 'glm-5.2:cloud[1m]'
+   timeout 180 claude -p 'Reply exactly OK.' \
+     --model 'glm-4.7:cloud'
    ```
 
 9. Check logs for mutation markers without exposing bodies:

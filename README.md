@@ -12,6 +12,8 @@ metadata that these clients cannot express correctly.
 
 - Claude Code can select `glm-5.2:cloud[1m]` so its local context budget is
   1M-class. The adapter forwards the valid Ollama model name `glm-5.2:cloud`.
+- Claude Code can use a cheaper Haiku-class model such as `glm-4.7:cloud` for
+  lightweight tasks while keeping Sonnet/Opus on GLM-5.2.
 - Codex can expose `xhigh` as the user-selectable top reasoning level. The
   adapter forwards Ollama GLM-compatible `max`.
 - Normal `high`, `medium`, `low`, and `none` reasoning levels are left alone.
@@ -202,17 +204,19 @@ codex exec --profile ollama-cloud \
 ## Claude Code Setup
 
 Claude Code should use the adapter as its Anthropic-compatible base URL and a
-display model with the `[1m]` suffix:
+display model with the `[1m]` suffix for Sonnet/Opus:
 
 ```bash
 ANTHROPIC_BASE_URL=http://127.0.0.1:11435
 ANTHROPIC_DEFAULT_SONNET_MODEL='glm-5.2:cloud[1m]'
-ANTHROPIC_DEFAULT_HAIKU_MODEL='glm-5.2:cloud[1m]'
+ANTHROPIC_DEFAULT_HAIKU_MODEL='glm-4.7:cloud'
 ANTHROPIC_DEFAULT_OPUS_MODEL='glm-5.2:cloud[1m]'
 ```
 
 The adapter strips `[1m]` before forwarding to Ollama. Claude Code still budgets
-the session as a 1M-class model.
+Sonnet/Opus sessions as 1M-class models. `glm-4.7:cloud` is intentionally left
+without `[1m]`; it is a cheaper Haiku-class default with a smaller context
+window.
 
 ## Verification
 
@@ -234,7 +238,8 @@ Expected result includes:
 Client smoke:
 
 ```bash
-claude -p /context --model glm-5.2:cloud
+claude -p /context --model 'glm-5.2:cloud[1m]'
+claude -p 'Reply exactly OK.' --model 'glm-4.7:cloud'
 
 codex exec --profile ollama-cloud \
   -c model_reasoning_effort='"xhigh"' \
